@@ -1,0 +1,59 @@
+{
+	"mcpServers": {
+		"fetch-server": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"mcp-server-fetch"
+			],
+			"env": {},
+			"lifecycle": "keep-alive",
+			"directTools": true
+		},
+		"burp": {
+			"command": "java",
+			"args": [
+				"-jar",
+				"/mcp-proxy.jar",
+				"--sse-url",
+				"http://127.0.0.1:9876"
+			],
+			"lifecycle": "eager",
+			"directTools": true
+		},
+		"idalib-mcp": {
+			"command": "/.venv/bin/python",
+			"args": [
+				"-m",
+				"ida_pro_mcp.idalib_supervisor",
+				"--stdio",
+				"--isolated-contexts",
+				"--max-workers",
+				"4"
+			],
+			"cwd": "/Users/zsm/CTF/zsm",
+			"lifecycle": "keep-alive",
+			"directTools": true
+		},
+		"jadx-mcp-server": {
+			"command": "/.local/bin/uv",
+			"args": [
+				"--directory",
+				"/jadx-mcp-server/",
+				"run",
+				"jadx_mcp_server.py"
+			],
+			"lifecycle": "keep-alive",
+			"directTools": true
+		},
+		"aboutsecurity": {
+			"type": "http",
+			"url": "http://127.0.0.1:1337/mcp",
+			"headers": {
+				"Authorization": ""
+			},
+			"lifecycle": "eager",
+			"directTools": true
+		}
+	}
+}
