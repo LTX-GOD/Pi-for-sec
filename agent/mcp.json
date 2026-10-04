@@ -1,0 +1,40 @@
+{
+  "autoEnableCodemode": true,
+  "mcpServers": {
+    "fetch-server": {
+      "command": "uvx",
+      "args": ["--with", "mcp<2", "mcp-server-fetch"],
+      "exposure": "direct"
+    },
+    "burp": {
+      "command": "java",
+      "args": [
+        "-jar",
+        "/mcp-proxy.jar",
+        "--sse-url",
+        ""
+      ],
+      "exposure": "deferred"
+    },
+    "aboutsecurity": {
+      "type": "http",
+      "url": "",
+      "headers": {
+        "Authorization": ""
+      },
+      "exposure": "direct"
+    },
+    "obs": {
+      "command": "agentic-obs",
+      "exposure": "codemode-deferred"
+    },
+    "leoai": {
+      "type": "http",
+      "url": "",
+      "headers": {
+        "Authorization": ""
+      },
+      "exposure": "deferred"
+    }
+  }
+}

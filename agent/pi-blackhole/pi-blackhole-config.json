@@ -1,0 +1,114 @@
+{
+  "compaction": "auto",
+  "compactionEngine": "blackhole",
+  "tailBehavior": "minimal",
+  "midRunCompaction": "off",
+  "compactAfterTokens": 300000,
+  "memory": true,
+  "sessionFallback": true,
+  "fullFoldAlways": true,
+
+  "model": {
+    "provider": "",
+    "id": "deepseek-v4.1-flash",
+    "thinking": "low",
+    "cooldownHours": 1,
+    "contextWindow": 1000000
+  },
+
+  "observerModel": {
+    "provider": "",
+    "id": "deepseek-v4.1-flash",
+    "thinking": "low",
+    "cooldownHours": 1,
+    "contextWindow": 1000000
+  },
+  "observerFallbackModels": [
+    {
+      "provider": "",
+      "id": "glm-5.3-flash",
+      "thinking": "off",
+      "cooldownHours": 1,
+      "contextWindow": 1000000
+    },
+    {
+      "provider": "MiniMax-M3.1",
+      "id": "MiniMax-M3.1-Flash-Preview",
+      "thinking": "off",
+      "cooldownHours": 1,
+      "contextWindow": 1000000
+    }
+  ],
+
+  "reflectorModel": {
+    "provider": "",
+    "id": "glm-5.3-flash",
+    "thinking": "low",
+    "cooldownHours": 1,
+    "contextWindow": 1000000
+  },
+  "reflectorFallbackModels": [
+    {
+      "provider": "",
+      "id": "deepseek-v4.1-flash",
+      "thinking": "low",
+      "cooldownHours": 1,
+      "contextWindow": 1000000
+    },
+    {
+      "provider": "MiniMax-M3.1",
+      "id": "MiniMax-M3.1-Flash-Preview",
+      "thinking": "low",
+      "cooldownHours": 1,
+      "contextWindow": 1000000
+    }
+  ],
+
+  "dropperModel": {
+    "provider": "",
+    "id": "glm-5.3-flash",
+    "thinking": "off",
+    "cooldownHours": 1,
+    "contextWindow": 1000000
+  },
+  "dropperFallbackModels": [
+    {
+      "provider": "",
+      "id": "deepseek-v4.1-flash",
+      "thinking": "off",
+      "cooldownHours": 1,
+      "contextWindow": 1000000
+    },
+    {
+      "provider": "MiniMax-M3.1",
+      "id": "MiniMax-M3.1-Flash-Preview",
+      "thinking": "off",
+      "cooldownHours": 1,
+      "contextWindow": 1000000
+    }
+  ],
+
+  "observeAfterTokens": 30000,
+  "reflectAfterTokens": 50000,
+  "observerChunkMaxTokens": 40000,
+  "observerPreambleMaxTokens": 0,
+  "observationsPoolMaxTokens": 40000,
+  "observationsPoolTargetTokens": 20000,
+  "reflectorInputMaxTokens": 80000,
+  "dropperInputMaxTokens": 80000,
+  "workerAttemptTimeoutMs": 240000,
+  "dropperPressureThreshold": 0.7,
+  "agentMaxTurns": 16,
+  "debug": false,
+  "debugLog": false,
+  "statusBar": false,
+  "compactionSummaryMode": "default",
+  "skipForProviders": [],
+  "showPreCompactionMessage": true,
+  "retainedToolOutputMaxTokens": 20000,
+  "recallResponseMaxChars": 48000,
+  "compactAfterPreset": "default",
+  "reflectionsPoolMaxTokens": 8000,
+  "dropperPoolFullnessThreshold": 0.1,
+  "showWorkerNotifications": true
+}

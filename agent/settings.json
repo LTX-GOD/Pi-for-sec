@@ -1,0 +1,43 @@
+{
+  "lastChangelogVersion": "1.0.2",
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "treeFilterMode": "no-tools",
+  "images": {
+    "blockImages": false
+  },
+  "packages": [
+    "npm:pi-web-access",
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-blackhole",
+    "npm:pi-subagents",
+    "git:github.com/HexRaysSA/ida-mcp@latest",
+    "git:github.com/DietrichGebert/ponytail"
+  ],
+  "extensions": [],
+  "defaultTools": [
+    "+codemode"
+  ],
+  "defaultProvider": "",
+  "defaultModel": "deepseek-v4.1-flash",
+  "subagents": {
+    "defaultModel": "dai-ds/deepseek-v4.1-flash"
+  },
+  "defaultThinkingLevel": "high",
+  "defaultProjectTrust": "always",
+  "doubleEscapeAction": "tree",
+  "warnings": {
+    "anthropicExtraUsage": false
+  },
+  "compaction": {
+    "enabled": true
+  },
+  "theme": "dark",
+  "tuiMode": "fullscreen",
+  "fullscreenExitOutput": "transcript",
+  "showCacheMissNotices": true,
+  "modelThinkingLevels": {
+    "dai-ds/deepseek-v4.1-flash": "high"
+  }
+}
