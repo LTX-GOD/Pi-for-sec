@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "aboutsecurity": {
+      "type": "http",
+      "url": "http://127.0.0.1:1337/mcp",
+      "headers": {
+        "Authorization": "Bearer zsm123321"
+      },
+      "exposure": "direct",
+      "description": "Pentest knowledge base: exploit techniques, payloads, wordlists, vuln DB. Use space-separated keywords like 'sqli bypass waf'."
+    }
+  }
+}

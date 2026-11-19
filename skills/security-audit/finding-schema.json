@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$comment": "Machine contract for findings.json. validate-findings.cjs is the authoritative checker for these shapes plus the status-conditional rules that schemas cannot express (confirmed gates, rejected refutation, uncertain settle-record). Keep this file and the validator in sync.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "title", "category", "severity", "confidence", "status", "locations", "flow", "impact"],
+    "additionalProperties": true,
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+        "description": "<blockId>-<nn> for block findings; <parentId>-v<n> for runtime variants. Never renumbered between passes."
+      },
+      "block": {
+        "type": ["string", "null"],
+        "description": "The ledger block this finding came from. Must exist in coverage-ledger.json."
+      },
+      "fingerprint": {
+        "type": ["string", "null"],
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@+-]*$",
+        "description": "Stable source-derived root-cause identifier. Survives every status change. Two live findings sharing a fingerprint is a merge failure."
+      },
+      "title": { "type": "string", "minLength": 1 },
+      "category": {
+        "type": "string",
+        "enum": ["authn", "authz", "tenant", "injection", "deserialization", "path", "upload", "ssrf", "rce", "crypto", "secrets", "exposure", "logic", "race", "config", "dependency", "container", "cicd", "dos", "other"]
+      },
+      "severity": {
+        "type": "string",
+        "enum": ["critical", "high", "medium", "low", "info"],
+        "description": "Impact-based, assuming stated preconditions. Independent of confidence; unverified severity is conditional until confirmed."
+      },
+      "confidence": {
+        "type": "string",
+        "enum": ["high", "medium", "low"],
+        "description": "low-confidence findings must not be reported as confirmed."
+      },
+      "status": {
+        "type": "string",
+        "enum": ["candidate", "needs-evidence", "evidence-reviewed", "cross-audited", "runtime-verified", "confirmed", "rejected", "uncertain", "duplicate", "approved-for-fix", "fixed", "reverified"]
+      },
+      "locations": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["file", "line"],
+          "additionalProperties": false,
+          "properties": {
+            "file": { "type": "string", "minLength": 1, "description": "repository-relative path" },
+            "line": { "type": "integer", "minimum": 1 },
+            "symbol": { "type": "string", "minLength": 1 }
+          }
+        }
+      },
+      "flow": { "type": "string", "minLength": 1, "description": "entrypoint -> ... -> sink, one line" },
+      "impact": { "type": "string", "minLength": 1 },
+      "preconditions": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 }
+      },
+      "evidence": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["file", "line", "quote"],
+          "additionalProperties": false,
+          "properties": {
+            "file": { "type": "string", "minLength": 1 },
+            "line": { "type": "integer", "minimum": 1 },
+            "quote": { "type": "string", "minLength": 1, "maxLength": 600, "description": "short, redacted; never credentials, tokens, or full payloads" }
+          }
+        }
+      },
+      "repro": { "type": "string" },
+      "existing_mitigations": { "type": "string" },
+      "needs_runtime": {
+        "type": "boolean",
+        "description": "true when only execution can settle the question; requires runtime_question."
+      },
+      "runtime_question": {
+        "type": ["string", "null"],
+        "description": "The exact executable question, phrased so a runtime agent can answer it."
+      },
+      "blocked_on": {
+        "type": ["string", "null"],
+        "description": "For uncertain: the exact missing fact (deployment config, provider behavior, platform fact not in the repo) and what would settle it. Not a confidence note."
+      },
+      "duplicate_of": {
+        "type": ["string", "null"],
+        "description": "For status=duplicate: the surviving finding id. Required and must resolve."
+      },
+      "verification": {
+        "type": ["object", "null"],
+        "additionalProperties": false,
+        "properties": {
+          "evidence_review": { "type": ["string", "null"], "enum": ["supported", "insufficient", "refuted", null] },
+          "cross_audit": { "type": ["string", "null"], "enum": ["confirmed", "refuted", "skipped", null] },
+          "runtime": { "type": ["string", "null"], "enum": ["confirmed", "refuted", "blocked", "not_required", "out_of_scope", null] },
+          "arbitration": { "type": ["string", "null"], "enum": ["upheld", "overturned", null] }
+        }
+      },
+      "remediation": { "type": "string" },
+      "notes": { "type": "string" }
+    }
+  },
+  "x-status-conditional-rules": {
+    "$comment": "Enforced by validate-findings.cjs, listed here as the contract:",
+    "confirmed": [
+      "verification.evidence_review === 'supported'",
+      "verification.cross_audit === 'confirmed', OR 'skipped' with severity low/info",
+      "if needs_runtime is true: verification.runtime in confirmed/not_required/out_of_scope (an explicit decision, not silence)"
+    ],
+    "rejected": ["at least one evidence entry or a notes entry refuting the claim"],
+    "uncertain": ["blocked_on, runtime_question, or notes states what would settle it"],
+    "duplicate": ["duplicate_of resolves to a live finding id, not itself"],
+    "approved-for-fix | fixed | reverified": ["non-empty remediation"],
+    "collection": [
+      "ids unique across the whole collection",
+      "at most one non-duplicate finding per fingerprint"
+    ]
+  }
+}
